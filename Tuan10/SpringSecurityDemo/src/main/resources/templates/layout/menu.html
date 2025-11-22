@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<header sec:authorize="isAuthenticated()">
+    <nav>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/documents}" sec:authorize="hasAuthority('DOCUMENT:READ')">Document</a>
+        <a th:href="@{/documents/create}" sec:authorize="hasAuthority('DOCUMENT:WRITE')">Create Document</a>
+        <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Admin</a>
+    </nav>
+
+    <div>
+        <span class="username">Hello <b sec:authentication="name"></b></span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</header>
+
+<div sec:authorize="isAnonymous()">
+    <main th:replace="${content}"></main>
+</div>
+
+<div sec:authorize="isAuthenticated()">
+    <main th:replace="${content}"></main>
+</div>
+
+</body>
+</html>
